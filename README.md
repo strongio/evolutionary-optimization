@@ -519,12 +519,19 @@ In the experiment section, we see that non-population based algorithms can be pr
 Here is another set of experiments with even higher parameter dimension, 12 instead of 8.  We can see some changes in the comparison and best-achieving optimizers.
 
 Alpine_one:
+
 ![](./images/param-12/pair_alpine_one.png)
+
 Rastrigin:
+
 ![](./images/param-12/pair_rastrigin.png)
+
 Rosenbrock:
+
 ![](./images/param-12/pair_rosenbrock.png)
+
 Sphere:
+
 ![](./images/param-12/pair_sphere.png)
 
 In summary, optimization scenarios can be complex and counter intuitive.  In reality, we often have little idea of the objective surface, e.g. DNN parameter search, which is thought to be suitable for PSO [19].  It is important to select a suitable method based on the specific problem.  Sometimes it even requires hyper-parameter tuning, which can easily be another layer of optimization of its own.  This behavior is similar to other machine learning techniques, e.g. classifier selection.
