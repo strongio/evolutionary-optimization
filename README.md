@@ -22,7 +22,7 @@ Non-population-based algorithms (Scipy's implementation):
 
 The software is open source and is available on our Github.
 
-    https://github.com/strongio/TBD
+    https://github.com/strongio/evolutionary-optimization
 
 Here is an outline of the basic usage of `evolutionary-optimization`.
 
@@ -46,12 +46,14 @@ def objective_function(X):
 # initiate a black-box optimizer
 optimizer = OptimizerFactory.create(option=OPTION, param_count=PARAM_COUNT)
 
-# set optimization hyper parameters; refer to each optimizer for tunable parameters
+# set hyper-parameters, optional
 optimizer.optimizer.population_size = 10
 optimizer.optimizer.max_iterations = 500
 
-# start optimization and print progress to standard out
+# optimize, print progress to standard out, and return solution
 best_params = optimizer.maximize(objective_function)
+
+# evaluate final solution to obtain the optima fitness
 best_fitness = objective_function(best_params)
 ```
 
@@ -75,7 +77,7 @@ Several Crossover schemes exist. In One Point Crossover, the algorithm chooses a
 
 Every position on every chromosome has a certain probability to mutate, which helps the population maintain or even improve its genetic diversity. Several variants of this technique exist. In Uniform Mutation <sup>[7]</sup>, when a position mutates, the algorithm replaces its value with a new value, chosen at random, between a predetermined lower and upper bound. In another variant, Gaussian Mutation <sup>[8]</sup>, when a position mutates, its current value increases or decreases based on a Gaussian random value.
 
-Here is an example progression of the algorithm where 
+Here is an example output of the progression of GA with the specified hyper-parameters:
 
 ```
 #
@@ -156,6 +158,7 @@ where <i>r<sub>p</sub></i> and <i>r<sub>g</sub></i> are two random values betwee
 <p  style="text-align:center">
     <b>v</b><sup>'</sup><sub style='position: relative; left: -.3em;'><i>i,d</i></sub> &larr; <i>&omega;</i> &sdot; <b>v</b><sub><i>i,d</i></sub> + <i>&Phi;<sub>p</sub> &sdot;r<sub>p</sub> &sdot;</i> (<b>p</b><sub><i>i,d</i></sub> - <b>x</b><sub><i>i,d</i></sub>) + <i>&Phi;<sub>g</sub> &sdot;r<sub>g</sub> &sdot;</i> (<b>p</b><sub><i>g,d</i></sub> - <b>x</b><sub><i>i,d</i></sub>)
 
+Here is an example output of the progression of PSO with the specified hyper-parameters:
 
 ```
 #
@@ -228,6 +231,8 @@ where <i>r<sub>p</sub></i> and <i>r<sub>g</sub></i> are two random values betwee
 Differential evolution algorithm (DEA) first developed by Storn and Price in 1995 <sup>[11]</sup> is less well-known approach in numerical optimization.  DEA requires less parameter tuning compared with GA and PSO.  After generating and evaluating an initial population, similar to GA and PSO, the solutions are refine as follow.  For each individual solution <i>j</i> choose three other individuals <i>k</i>, <i>l</i>, and <i>m</i> randomly from the population with (<i>i</i> &ne; <i>k</i> &ne; <i>l</i> &ne; <i>m</i>), calculate the difference of the solutions in <i>k</i> and <i>l</i>, scale it by multiplication with a parameter <i>f</i> and create an offspring by adding the result to the solution of <i>m</i>.  The only additional twist in this process is that not the entire solutions of the offspring is created in this way, but that parameters are partly inherited from individual <i>j</i>, such that <i>o<sub>i</sub></i> is <i>m<sub>i</sub></i> + <i>f</i> &sdot; (<i>k<sub>i</sub></i> - <i>l<sub>i</sub></i>) if a random number taken in range [0, 1] is less that <i>p</i>, otherwise <i>o<sub>i</sub></i> is <i>j<sub>i</sub></i>. The proportion is determined by <i>p</i>, which determines how many parameters of the difference vector on average are copied to the offspring <sup>[12]</sup>.
 
 More precisely, the operator iteratively copies consecutive parameters of the difference vector to the offspring until a random number taken in range [0, 1] is greater than or equal to <i>p</i>.  If the offspring <i>o</i> is better than <i>j</i> then <i>j</i> is replaced by <i>o</i>.  This process continues untila maximum length of time expires or a maximum number of iterations is reached.
+
+Here is an example output of the progression of DEA with the specified hyper-parameters:
 
 ```
 #
