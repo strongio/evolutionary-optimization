@@ -492,62 +492,66 @@ We would like to highlight the following considerations when using `evolutionary
 
 ### Parameter space rescaling
 
-Rescale parameter space may help the performance significantly for a given problem.  Population-based EA algorithms start with an initial set of individuals and follow an algorithmic procedure to explore the parameter space.  All encoded solutions are linearly interpolated into interval [0, 1].  This interpolation may not be the absolute best for certain problems.  For example, an additional log interpolation can be applied if the parameter space is known to be positive.
+Rescaling the parameter space may help the performance significantly for some problems.  Our population-based EA algorithms start with an initial set of individuals and follow an algorithmic procedure to explore the parameter space.  All encoded solutions are linearly interpolated into interval [0, 1].  This interpolation may not be the absolute best for certain problems.  For example, an additional log interpolation can be applied if the parameter space is known to be positive.
 
 ### Absolute optima
  
-Absolute optima is *not* always the goal even when the problem formulation is optimization in nature.  The most suitable optimization subroutine is not always the one that produces the absolute optima.  For example, in a DNN, we optimize a loss function and directly infer edge weights, but we don't care about edge weights themselves.  It's likely multiple optima produce the same classification outcome, which is what we care about.  In addition, over fitting is a common issue, so it's not advisable to pursue absolute optima.  On other hand, if we optimize a parametrized statistical model where the model parameters are the output directly, we would want to pursue optima.
+Absolute optima is *not* always the goal even when the problem formulation is optimization in nature.  The most suitable optimization subroutine is not always the one that produces the absolute optima.  For example, in a DNN, we optimize a loss function and directly infer edge weights, but we don't care about edge weights themselves.  It's likely multiple optima produce the same classification outcome, which is what we care about.  In addition, over fitting is a common issue, so it's not advisable to pursue absolute optima.  On the other hand, if we optimize a parametrized statistical model where the model parameters are the variable of interest directly, we would want the absolute optima.
 
 ### Comparison with derivative-aware optimizers
 
-Black-box optimizers are not meant to be compared with derivative-aware optimizers.  If we know the analytical form of an objective function, and the derivatives (first and second order) are not crazy to obtain, it's always advisable to take advantage of the derivative information.  This, however, is not feasible in many case, probably the majority in engineering scenarios.  In addition, black-box optimizers enables a drop-and-go solution that impose no assumption in the objective function as long as we can evaluate it's value given a parameter set.
+Black-box optimizers are not meant to be compared with derivative-aware optimizers.  If we know the analytical form of an objective function, and the derivatives (first, second order) are not crazy to obtain, it's always advisable to take advantage of the derivative information.  This, however, is not feasible in many cases, probably the majority engineering scenarios.  In addition, black-box optimizers enables a drop-and-go solution that impose no assumption in the objective function as long as we can evaluate it's value given a parameter set.
 
 ### Dimensionality
 
-Black-box optimization algorithms are light weight but, by nature, they are not capable of dealing with huge parameter dimension.  In cases where function formulation can easily be scaled to have hundreds, thousands, or even parameters, black-box optimizations would not work.  For instance, topic modeling, structure analysis, and DNN, are in this category.  Rigorous optimization approaches that make use of the derivatives should be considered, such as back propagation for DNN and quadratic programming in structure analysis.  If derivatives are unattainable, then sampling techniques such as MCMC could be a possibility.
+Black-box optimization algorithms are light weight but, by nature, they are not capable of dealing with huge parameter dimensions.  In cases where function formulation can easily be scaled to have hundreds, thousands, or even more parameters, black-box optimizations would not work.  For instance, topic modeling, structure analysis, and DNN, are in this category.  Rigorous optimization approaches that make use of the derivatives should be considered, such as back propagation for DNN and quadratic programming in structure analysis.  If derivatives are unattainable, then sampling techniques such as MCMC could be a possibility.
 
 ### Constraints
 
-All test functions used in this discussion are unconstrained.  The optimization method in `evolutionary-optimization` are created to work with unconstrained optimization problems.  This does not mean that `evolutionary-optimization` optimizers are incomparable with all constraints.  For example, a simple approach is to incorporate assign range constraints is to assign dis-favorable value, in the objective function, when parameters are out of bounds.  This is, however, a relatively dangerous maneuver and often require extra care during parameter initialization, otherwise optimizers may stuck in a "death" zone and never recover.
+All test functions used in this discussion are unconstrained.  The optimization method in `evolutionary-optimization` are created to work with unconstrained problems.  This does not mean that these optimizers are incompatible with all constraints.  For example, a simple approach to incorporate range constraints is by assigning dis-favorable value, e.g. negative infinity, in the objective function when parameters are out of bounds.  This, however, is a relatively dangerous maneuver and often require extra care during parameter initialization, otherwise optimizers may stuck in a "death" zone and never recover.
 
 ## Summary
 
-We present `evolutionary-optimization`, a toolset for derivative-free black-box optimization algorithms. `evolutionary-optimization` focuses on evolutionary algorithms, which is a subset of evolutionary computation in the domain of artificial intelligence.  We can also refer them as generic population-based meta-heuristic optimization algorithms.
+We present `evolutionary-optimization`, an open-source toolset for derivative-free black-box optimization algorithms. It focuses on evolutionary algorithms, which is a subset of evolutionary computation utilized in the field of artificial intelligence.  We can also refer them as generic population-based meta-heuristic optimization algorithms.
 
-Optimization scenarios can be complex and counter-intuitive.  It is important to select a suitable algorithm based on the specific problem.  Sometimes it even requires hyperparameter tuning, which can easily be another layer of optimization.  This behavior is similar to other machine learning techniques, e.g. classification algorithms.
+In the experiment section, we see that non-population based algorithms can be preferable, especially in straightforward optimization problems, such as the high-dimension Sphere function.  When the objective surface is rough, such as the Rastrigin function, we see that DEA seems preferable.  We observe that a seemingly straightforward objective surface from the Rosenbrock function poses challenge, and GA outperforms other EA methods. We also had cases [18] where PSO outperforms the rest.
+
+Optimization scenarios can be complex and counter intuitive.  It is important to select a suitable method based on the specific problem.  Sometimes it even requires hyper-parameter tuning, which can easily be another layer of optimization of its own.  This behavior is similar to other machine learning techniques, e.g. classifier selection.
 
 ## Related works
 
-J. A. Nelder, R. Mead, A simplex method for function minimization, The Computer Journal 7 (4) (1965) 308-313. doi:10.1093/comjnl/7.4.308.
+1. J. A. Nelder, R. Mead, A simplex method for function minimization, The Computer Journal 7 (4) (1965) 308-313. doi:10.1093/comjnl/7.4.308.
 
-J. H. Holland, Genetic algorithms, Scientific American 267 (1) (1992) 6672.
+2. J. H. Holland, Genetic algorithms, Scientific American 267 (1) (1992) 6672.
 
-D. E. Goldberg, Genetic Algorithms in Search, Optimization and Machine Learning, 1st Edition, Addison-Wesley Longman Publishing Co., Inc., Boston, MA, USA, 1989.
+3. D. E. Goldberg, Genetic Algorithms in Search, Optimization and Machine Learning, 1st Edition, Addison-Wesley Longman Publishing Co., Inc., Boston, MA, USA, 1989.
 
-J. E. Baker, Reducing bias and inefficiency in the selection algorithm, in: Proceedings of the Second International Conference on Genetic Algorithms on Genetic algorithms and their application, L. Erlbaum Associates Inc., Hillsdale, NJ, USA, 1987, pp. 14-21.
+4. J. E. Baker, Reducing bias and inefficiency in the selection algorithm, in: Proceedings of the Second International Conference on Genetic Algorithms on Genetic algorithms and their application, L. Erlbaum Associates Inc., Hillsdale, NJ, USA, 1987, pp. 14-21.
 
-B. L. Miller, B. L. Miller, D. E. Goldberg, D. E. Goldberg, Genetic algorithms, tournament selection, and the effects of noise, Complex Systems 9 (1995) 193-212.
+5. B. L. Miller, B. L. Miller, D. E. Goldberg, D. E. Goldberg, Genetic algorithms, tournament selection, and the effects of noise, Complex Systems 9 (1995) 193-212.
 
-G. Syswerda, Uniform crossover in genetic algorithms, in: J. D. Schaffer (Ed.), Proceedings of the Third International Conference on Genetic Algorithms, Morgan Kaufmann, 1989, pp. 2-9.
+6. G. Syswerda, Uniform crossover in genetic algorithms, in: J. D. Schaffer (Ed.), Proceedings of the Third International Conference on Genetic Algorithms, Morgan Kaufmann, 1989, pp. 2-9.
 
-Z. Michalewicz, Genetic algorithms + data structures = evolution programs (1996).
+7. Z. Michalewicz, Genetic algorithms + data structures = evolution programs (1996).
 
-K. Deb, 2001, multiobjetive optimization using evolutionary algorithms (2001).
+8. K. Deb, 2001, multiobjetive optimization using evolutionary algorithms (2001).
 
-R. Eberhart, J. Kennedy, A new optimizer using particle swarm theory, in: Proceedings of the Sixth International Symposium on Micro Machine and Human Science, 1995., 1995, pp. 39-43. doi:10.1109/MHS.1995. 494215.
+9. R. Eberhart, J. Kennedy, A new optimizer using particle swarm theory, in: Proceedings of the Sixth International Symposium on Micro Machine and Human Science, 1995., 1995, pp. 39-43. doi:10.1109/MHS.1995. 494215.
 
-Y. Shi, R. Eberhart, A modified particle swarm optimizer, in: Evolutionary Computation Proceedings, 1998. IEEE World Congress on Computational Intelligence., The 1998 IEEE International Conference on, 1998, pp. 69-73. doi:10.1109/ICEC.1998.699146.
+10. Y. Shi, R. Eberhart, A modified particle swarm optimizer, in: Evolutionary Computation Proceedings, 1998. IEEE World Congress on Computational Intelligence., The 1998 IEEE International Conference on, 1998, pp. 69-73. doi:10.1109/ICEC.1998.699146.
 
-Storn, R. and Price, K., Differential Evolution - a Simple and Efficient Adaptive Scheme for Global Optimization over Continuous Spaces, Technical Report TR-95-012, ICSI, March 1995, ftp.icsi.berkeley.edu. Anyone who is interested in trying Differential Evolution (DE)
+11. Storn, R. and Price, K., Differential Evolution - a Simple and Efficient Adaptive Scheme for Global Optimization over Continuous Spaces, Technical Report TR-95-012, ICSI, March 1995, ftp.icsi.berkeley.edu. Anyone who is interested in trying Differential Evolution (DE)
 
-S. Paterlini and T. Krink, Differential evolution and particle swarm optimisation in partitional clustering, Comput. Stat. Data Anal., vol. 50, no. 5, pp. 1220-1247, Mar. 2006.
+12. S. Paterlini and T. Krink, Differential evolution and particle swarm optimisation in partitional clustering, Comput. Stat. Data Anal., vol. 50, no. 5, pp. 1220-1247, Mar. 2006.
 
-Olson, B., Hashmi, I., Molloy, K. and Shehu, A., 2012. Basin hopping as a general and versatile optimization framework for the characterization of biological macromolecules. Advances in Artificial Intelligence, 2012, p.3.
+13. Olson, B., Hashmi, I., Molloy, K. and Shehu, A., 2012. Basin hopping as a general and versatile optimization framework for the characterization of biological macromolecules. Advances in Artificial Intelligence, 2012, p.3.
 
-Vikhar, P. A. "Evolutionary algorithms: A critical review and its future prospects
+14. Vikhar, P. A. "Evolutionary algorithms: A critical review and its future prospects
 
-https://en.wikipedia.org/wiki/Derivative-free_optimization
+15. https://en.wikipedia.org/wiki/Derivative-free_optimization
 
-https://link.springer.com/article/10.1007/s11081-016-9307-4
+16. https://link.springer.com/article/10.1007/s11081-016-9307-4
 
-https://en.wikipedia.org/wiki/Evolutionary_algorithm
+17. https://en.wikipedia.org/wiki/Evolutionary_algorithm
+
+18. Cheng, J.Y. and Mailund, T., 2015. Ancestral population genomics using coalescence hidden Markov models and heuristic optimisation algorithms. Computational biology and chemistry, 57, pp.80-92.
