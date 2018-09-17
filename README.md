@@ -293,7 +293,7 @@ Here is an example output of the progression of DEA with the specified hyper-par
 
 ### Non-population-based derivative-free optimizations
 
-In this section, we will discuss several derivative-free optimizers included in `evolutionary-optimization`, provided by `Scipy`.  Unlike GA, PSO, and DEA, the following methods are not evolutionary algorithms and are not population-based.
+In this section, we will discuss several derivative-free optimizers included in `evolutionary-optimization`.  These methods are provided by `Scipy`.  Unlike GA, PSO, and DEA, the following methods are not evolutionary algorithms and are not population-based.
 
 #### Nelder-Mead optimization (NM)
 
@@ -341,7 +341,7 @@ For the comparison we also include BFGS in this discussion. BFGS is not a true d
 
 #### Powell optimization (POW)
 
-Powell's conjugate direction method, is an algorithm proposed by Michael J. D. Powell in 1964 for finding a local minimum of a function.  The method minimises the function by a bi-directional search along each search vector, in turn. The bi-directional line search along each search vector can be done by e.g. Golden-section search.  Similar to NM and other optimizers, algorithm iterates an arbitrary number of times until no significant improvement is made.
+Powell's conjugate direction method, is an algorithm proposed by Michael J. D. Powell in 1964 <sup>[20]</sup> for finding a local minimum of a function.  The method minimises the function by a bi-directional search along each search vector, in turn. The bi-directional line search along each search vector can be done by e.g. Golden-section search.  Similar to NM and other optimizers, algorithm iterates an arbitrary number of times until no significant improvement is made.
 
 ```
 #
@@ -364,7 +364,7 @@ Powell's conjugate direction method, is an algorithm proposed by Michael J. D. P
 
 #### Basin-hopping optimization (BH)
 
-Basin-hopping is a two-phase method that combines a global stepping algorithm with local minimization at each step. It is designed to mimic the natural process of energy minimization of clusters of atoms. It works well for problems with "funnel-like, but rugged" energy landscapes <sup>[13]</sup>.  It can be considered as an ensemble that takes the Monte Carlo approach for the global phase and another optimizer of choice for the local phase.  Without the local optimizer, this procedure is simulated annealing, a Monte Carlo based black-box optimization algorithm.
+Basin-hopping is a two-phase method that combines a global stepping algorithm with local minimization at each step. It is designed to mimic the natural process of energy minimization of clusters of atoms. It works well for problems with "funnel-like, but rugged" energy landscapes <sup>[13]</sup>.  It can be considered as an ensemble that takes the Monte Carlo approach for the global phase and a local optimizer of choice for the local phase.  Without the local optimizer, this procedure is simulated annealing, a Monte Carlo based black-box optimization algorithm.
 
 ```
 #
@@ -387,7 +387,7 @@ Basin-hopping is a two-phase method that combines a global stepping algorithm wi
 
 ## Evaluation
 
-In applied mathematics, test functions, known as artificial landscapes, are useful to evaluate characteristics of optimization algorithms.  In this section, we will apply a few well-known artificial landscape functions to test the optimization methods.
+In applied mathematics, test functions, known as artificial landscapes, are useful to evaluate characteristics of optimization algorithms.  In this section, we will apply a few well-known artificial landscape functions to test the optimization methods included in our `evolutionary-optimization`.
 
 ### Alpine one
 
@@ -401,11 +401,11 @@ Here is the surface visualization when the optimization dimension is 2.
 ![](./images/3d-alpine_one-15.png) ![](./images/3d-alpine_one-75.png) 
 ![](./images/3d-alpine_one-135.png) ![](./images/3d-alpine_one-195.png)
 
-Here is a comparison of optimizer performances when the optimization dimension is 8 and all population-based methods are set to have 25 individuals and 500 iterations with no problem-specific hyperparameter tuning.
+Here is a comparison of optimizer performances when the optimization dimension is 8 and all population-based methods are set to have 25 individuals and 500 iterations with no problem-specific hyper-parameter tuning.
 
 ![](./images/param-8/pair_alpine_one.png)
 
-We see BFGS is significantly under-performing that other methods.  BFGS estimates derivatives from iterations.  Since alpine_one is a non-differentiable function, it is not suitable for derivative-aware optimization algorithms, such as BFGS or gradient descent.
+We see BFGS is significantly under-performing that other methods.  This is expected.  BFGS estimates derivatives from iterations.  Since alpine_one is a non-differentiable function, it is not suitable for derivative-aware optimization algorithms, such as BFGS or gradient descent.
 
 
 ### Rastrigin
@@ -423,7 +423,7 @@ Here is the surface visualization when the optimization dimension is 2.
 ![](./images/3d-rastrigin-15.png) ![](./images/3d-rastrigin-75.png)
 ![](./images/3d-rastrigin-135.png) ![](./images/3d-rastrigin-195.png)
 
-Here is a comparison of optimizer performances when the optimization dimension is 8 and all population-based methods are set to have 25 individuals and 500 iterations with no problem-specific hyperparameter tuning.
+Here is a comparison of optimizer performances when the optimization dimension is 8 and all population-based methods are set to have 25 individuals and 500 iterations with no problem-specific hyper-parameter tuning.
 
 ![](./images/param-8/pair_rastrigin.png)
 
@@ -445,7 +445,7 @@ Here is the surface visualization when the optimization dimension is 2.
 ![](./images/3d-rosenbrock-15.png) ![](./images/3d-rosenbrock-75.png)
 ![](./images/3d-rosenbrock-135.png) ![](./images/3d-rosenbrock-195.png)
 
-Here is a comparison of optimizer performances when the optimization dimension is 8 and all population-based methods are set to have 25 individuals and 500 iterations with no problem-specific hyperparameter tuning.
+Here is a comparison of optimizer performances when the optimization dimension is 8 and all population-based methods are set to have 25 individuals and 500 iterations with no problem-specific hyper-parameter tuning.
 
 ![](./images/param-8/pair_rosenbrock.png)
 
@@ -464,32 +464,11 @@ Here is the surface visualization when the optimization dimension is 2.
 ![](./images/3d-sphere-15.png) ![](./images/3d-sphere-75.png)
 ![](./images/3d-sphere-135.png) ![](./images/3d-sphere-195.png)
 
-Here is a comparison of optimizer performances when the optimization dimension is 8 and all population-based methods are set to have 25 individuals and 500 iterations with no problem-specific hyperparameter tuning.
+Here is a comparison of optimizer performances when the optimization dimension is 8 and all population-based methods are set to have 25 individuals and 500 iterations with no problem-specific hyper-parameter tuning.
 
 ![](./images/param-8/pair_sphere.png)
 
-We see here almost all methods reached a tight and accuracy optima, with DEA, BFGS, POW, BH being the best.  The optimization is a simple sphere.  It should be a straightforward task, and it most suitable for derivative-aware methods, like BFGS.
-
-
-<!--
-### Styblinski–Tang
-
-```python
-def styblinski_tang(X):
-    return -0.5 * sum([x**4 - (16 * x**2) + (5 * 5) for x in X])
-```
-
-Here is the surface visualization when the optimization dimension is 2.
-
-![](./images/3d-styblinski_tang-15.png) ![](./images/3d-styblinski_tang-75.png)
-![](./images/3d-styblinski_tang-135.png) ![](./images/3d-styblinski_tang-195.png)
-
-Here is a comparison of optimizer performances when the optimization dimension is 8 and all population-based methods are set to have 25 individuals and 500 iterations with no problem-specific hyperparameter tuning.
-
-![](./images/param-8/pair_styblinski_tang.png)
-
-Here we show that derivative-aware optimization does not always fail in multimodal scenarios.  Here BFGS out performs other methods.
--->
+We see here almost all methods reached a tight and accuracy optima, with DEA, BFGS, POW, BH being the best.  The optimization is a simple sphere.  It should be a straightforward task, and it most suitable for derivative-aware methods.
 
 
 ## Considerations
@@ -582,3 +561,4 @@ In summary, optimization scenarios can be complex and counter intuitive.  In rea
 
 19. Qolomany, B., Maabreh, M., Al-Fuqaha, A., Gupta, A. and Benhaddou, D., 2017, June. Parameters optimization of deep learning models using Particle swarm optimization. In Wireless Communications and Mobile Computing Conference (IWCMC), 2017 13th International (pp. 1285-1290). IEEE.
 
+20. Powell, M.J., 1964. An efficient method for finding the minimum of a function of several variables without calculating derivatives. The computer journal, 7(2), pp.155-162.
