@@ -387,7 +387,8 @@ def alpine_one(X):
 
 Here is the surface visualization when the optimization dimension is 2.
 
-![](./images/3d-alpine_one-15.png) ![](./images/3d-alpine_one-75.png) ![](./images/3d-alpine_one-135.png)
+![](./images/3d-alpine_one-15.png) ![](./images/3d-alpine_one-75.png) 
+![](./images/3d-alpine_one-135.png) ![](./images/3d-alpine_one-195.png)
 
 Here is a comparison of optimizer performances when the optimization dimension is 8 and all population-based methods are set to have 25 individuals and 500 iterations with no problem-specific hyperparameter tuning.
 
@@ -408,7 +409,8 @@ def rastrigin(X):
 
 Here is the surface visualization when the optimization dimension is 2.
 
-![](./images/3d-rastrigin-15.png) ![](./images/3d-rastrigin-75.png) ![](./images/3d-rastrigin-135.png)
+![](./images/3d-rastrigin-15.png) ![](./images/3d-rastrigin-75.png)
+![](./images/3d-rastrigin-135.png) ![](./images/3d-rastrigin-195.png)
 
 Here is a comparison of optimizer performances when the optimization dimension is 8 and all population-based methods are set to have 25 individuals and 500 iterations with no problem-specific hyperparameter tuning.
 
@@ -429,7 +431,8 @@ def rosenbrock(X):
 
 Here is the surface visualization when the optimization dimension is 2.
 
-![](./images/3d-rosenbrock-15.png) ![](./images/3d-rosenbrock-75.png) ![](./images/3d-rosenbrock-135.png)
+![](./images/3d-rosenbrock-15.png) ![](./images/3d-rosenbrock-75.png)
+![](./images/3d-rosenbrock-135.png) ![](./images/3d-rosenbrock-195.png)
 
 Here is a comparison of optimizer performances when the optimization dimension is 8 and all population-based methods are set to have 25 individuals and 500 iterations with no problem-specific hyperparameter tuning.
 
@@ -447,7 +450,8 @@ def sphere(X):
 
 Here is the surface visualization when the optimization dimension is 2.
 
-![](./images/3d-sphere-15.png) ![](./images/3d-sphere-75.png) ![](./images/3d-sphere-135.png)
+![](./images/3d-sphere-15.png) ![](./images/3d-sphere-75.png)
+![](./images/3d-sphere-135.png) ![](./images/3d-sphere-195.png)
 
 Here is a comparison of optimizer performances when the optimization dimension is 8 and all population-based methods are set to have 25 individuals and 500 iterations with no problem-specific hyperparameter tuning.
 
@@ -466,7 +470,8 @@ def styblinski_tang(X):
 
 Here is the surface visualization when the optimization dimension is 2.
 
-![](./images/3d-styblinski_tang-15.png) ![](./images/3d-styblinski_tang-75.png) ![](./images/3d-styblinski_tang-135.png)
+![](./images/3d-styblinski_tang-15.png) ![](./images/3d-styblinski_tang-75.png)
+![](./images/3d-styblinski_tang-135.png) ![](./images/3d-styblinski_tang-195.png)
 
 Here is a comparison of optimizer performances when the optimization dimension is 8 and all population-based methods are set to have 25 individuals and 500 iterations with no problem-specific hyperparameter tuning.
 
