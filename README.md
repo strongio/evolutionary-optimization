@@ -516,7 +516,18 @@ We present `evolutionary-optimization`, an open-source toolset for derivative-fr
 
 In the experiment section, we see that non-population based algorithms can be preferable, especially in straightforward optimization problems, such as the high-dimension Sphere function.  When the objective surface is rough, such as the Rastrigin function, we see that DEA seems preferable.  We observe that a seemingly straightforward objective surface from the Rosenbrock function poses challenge, and GA outperforms other EA methods. We also had cases [18] where PSO outperforms the rest.
 
-Optimization scenarios can be complex and counter intuitive.  It is important to select a suitable method based on the specific problem.  Sometimes it even requires hyper-parameter tuning, which can easily be another layer of optimization of its own.  This behavior is similar to other machine learning techniques, e.g. classifier selection.
+Here is another set of experiments with even higher parameter dimension, 12 instead of 8.  We can see some changes in the comparison and best-achieving optimizers.
+
+Alpine_one:
+![](./images/param-12/pair_alpine_one.png)
+Rastrigin:
+![](./images/param-12/pair_rastrigin.png)
+Rosenbrock:
+![](./images/param-12/pair_rosenbrock.png)
+Sphere:
+![](./images/param-12/pair_sphere.png)
+
+In summary, optimization scenarios can be complex and counter intuitive.  In reality, we often have little idea of the objective surface, e.g. DNN parameter search, which is thought to be suitable for PSO [19].  It is important to select a suitable method based on the specific problem.  Sometimes it even requires hyper-parameter tuning, which can easily be another layer of optimization of its own.  This behavior is similar to other machine learning techniques, e.g. classifier selection.
 
 ## Related works
 
@@ -555,3 +566,6 @@ Optimization scenarios can be complex and counter intuitive.  It is important to
 17. https://en.wikipedia.org/wiki/Evolutionary_algorithm
 
 18. Cheng, J.Y. and Mailund, T., 2015. Ancestral population genomics using coalescence hidden Markov models and heuristic optimisation algorithms. Computational biology and chemistry, 57, pp.80-92.
+
+19. Qolomany, B., Maabreh, M., Al-Fuqaha, A., Gupta, A. and Benhaddou, D., 2017, June. Parameters optimization of deep learning models using Particle swarm optimization. In Wireless Communications and Mobile Computing Conference (IWCMC), 2017 13th International (pp. 1285-1290). IEEE.
+
