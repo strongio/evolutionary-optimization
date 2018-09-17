@@ -516,7 +516,7 @@ We present `evolutionary-optimization`, an open-source toolset for derivative-fr
 
 In the experiment section, we see that non-population based algorithms can be preferable, especially in straightforward optimization problems, such as the high-dimension Sphere function.  When the objective surface is rough, such as the Rastrigin function, we see that DEA seems preferable.  We observe that a seemingly straightforward objective surface from the Rosenbrock function poses challenge, and GA outperforms other EA methods. We also had cases [18] where PSO outperforms the rest.
 
-Here is another set of experiments with even higher parameter dimension, 12 instead of 8.  We can see some changes in the comparison and best-achieving optimizers.
+Here is another set of experiments with an even higher parameter dimension, 12 instead of 8.  We can see some changes in the comparison and best-achieving optimizers.
 
 Alpine_one:
 
