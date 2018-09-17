@@ -139,13 +139,19 @@ Here is an example output of the progression of GA with the specified hyper-para
 
 ### Particle Swarm Optimization (PSO)
 
-Particle Swarm Optimization (PSO) is another type of heuristic based search algorithm. Eberhart and Kennedy first discovered and introduced this optimization technique through simulation of a simplified social model in 1995 <sup>[9]</sup>. Similar to GAs, PSOs are highly dependent on stochastic processes. Each individual in a PSO population maintains a position and a velocity as it flies through a hyperspace in which each dimension corresponds to one position in an encoded solution. Each individual contains a current position, which evaluates to a fitness value. Each individual also maintains its personal best position <b>p</b><sub><i>i</i></sub> and tracks the global best position <b>p</b><sub><i>g</i></sub> of the swarm, see the figure below. The former encapsulates the cognitive influence, and the latter encapsulates the social influence. A PSO works as an iterative process. After each iteration, the algorithm adjusts the position of each individual based on its knowledge of <b>p</b><sub><i>i</i></sub> and <b>p</b><sub><i>g</i></sub>. This adjustment is analogous to the crossover operation used by GAs. The inertia of an individual, however, allows it to overshoot local minima and explore unknown regions of the problem domain.
+Particle Swarm Optimization (PSO) is another type of heuristic based search algorithm. Eberhart and Kennedy first discovered and introduced this optimization technique through simulation of a simplified social model in 1995 <sup>[9]</sup>. Similar to GAs, PSOs are highly dependent on stochastic processes. Each individual in a PSO population maintains a position and a velocity as it flies through a hyperspace in which each dimension corresponds to one position in an encoded solution.
 
 ![](images/psodiagram.svg)
 
-Three vectors applied to a particle at position <b>x</b><sub><i>i</i></sub> in one iteration of a Particle Swarm Optimization: a cognitive influence urges the particle toward its previous best <b>p</b><sub><i>i</i></sub>, a social influence urges the particle toward the swarm&rsquo;s previous best <b>p</b><sub><i>g</i></sub>, and its own velocity <b>v</b><sub><i>i</i></sub> provides inertia, allowing it to overshoot local minima and explore unknown regions of the problem domain.
+Each individual contains a current position, which evaluates to a fitness value. Each individual also maintains its personal best position <b>p</b><sub><i>i</i></sub> and tracks the global best position <b>p</b><sub><i>g</i></sub> of the swarm, see the figure above. The former encapsulates the cognitive influence, and the latter encapsulates the social influence. A PSO works as an iterative process. After each iteration, the algorithm adjusts the position of each individual based on its knowledge of <b>p</b><sub><i>i</i></sub> and <b>p</b><sub><i>g</i></sub>. This adjustment is analogous to the crossover operation used by GAs. The inertia of an individual, however, allows it to overshoot local minima and explore unknown regions of the problem domain.
 
-In PSO, we represent the position of the <i>i</i>th particle as <b>x</b><sub><i>i</i></sub> = (<i>x<sub>i,1</sub>, x<sub>i,2</sub>, &hellip; x<sub>i,D</sub></i>) and its velocity as <b>v</b><sub><i>i</i></sub> = (<i>v<sub>i,1</sub>, v<sub>i,2</sub>, &hellip; v<sub>i,D</sub></i>), where <i>D</i> is the number of dimensions in the parameter space. We represent the particle&rsaquo;s previous position with its best fitness as <b>p</b><sub><i>i</i></sub> = (<i>p<sub>i,1</sub>, p<sub>i,2</sub>, &hellip; p<sub>i,D</sub></i>). During each iteration, the algorithm adjusts the velocity <b>v</b> and position <b>x</b> according to the following equations:
+Three vectors applied to a particle at position <b>x</b><sub><i>i</i></sub> in one iteration of a PSO:
+
+- A cognitive influence urges the particle toward its previous best <b>p</b><sub><i>i</i></sub>
+- A social influence urges the particle toward the swarm&rsquo;s previous best <b>p</b><sub><i>g</i></sub>, 
+- Its own velocity <b>v</b><sub><i>i</i></sub> provides inertia, allowing it to overshoot local minima and explore unknown regions of the problem domain.
+
+In PSO, we represent the position of the <i>i</i>th particle as <b>x</b><sub><i>i</i></sub> = (<i>x<sub>i,1</sub>, x<sub>i,2</sub>, &hellip; x<sub>i,D</sub></i>) and its velocity as <b>v</b><sub><i>i</i></sub> = (<i>v<sub>i,1</sub>, v<sub>i,2</sub>, &hellip; v<sub>i,D</sub></i>), where <i>D</i> is the number of dimensions in the parameter space. We represent the particle's previous position with its best fitness as <b>p</b><sub><i>i</i></sub> = (<i>p<sub>i,1</sub>, p<sub>i,2</sub>, &hellip; p<sub>i,D</sub></i>). During each iteration, the algorithm adjusts the velocity <b>v</b> and position <b>x</b> according to the following equations:
 
 <p  style="text-align:center">
     <b>v</b><sup>'</sup><sub style='position: relative; left: -.3em;'><i>i,d</i></sub> &larr; <b>v</b><sub><i>i,d</i></sub> + <i>&Phi;<sub>p</sub> &sdot;r<sub>p</sub> &sdot;</i> (<b>p</b><sub><i>i,d</i></sub> - <b>x</b><sub><i>i,d</i></sub>) + <i>&Phi;<sub>g</sub> &sdot;r<sub>g</sub> &sdot;</i> (<b>p</b><sub><i>g,d</i></sub> - <b>x</b><sub><i>i,d</i></sub>)
@@ -518,19 +524,19 @@ In the experiment section, we see that non-population based algorithms can be pr
 
 Here is another set of experiments with an even higher parameter dimension, 12 instead of 8.  We can see some changes in the comparison and best-achieving optimizers.
 
-Alpine_one:
+12-param alpine_one:
 
 ![](./images/param-12/pair_alpine_one.png)
 
-Rastrigin:
+12-param rastrigin:
 
 ![](./images/param-12/pair_rastrigin.png)
 
-Rosenbrock:
+12-param rosenbrock:
 
 ![](./images/param-12/pair_rosenbrock.png)
 
-Sphere:
+12-param sphere:
 
 ![](./images/param-12/pair_sphere.png)
 
