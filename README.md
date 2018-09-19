@@ -501,6 +501,7 @@ We present `evolutionary-optimization`, an open-source toolset for derivative-fr
 
 In the experiment section, we see that non-population based algorithms can be preferable, especially in straightforward optimization problems, such as the high-dimension Sphere function.  When the objective surface is rough, such as the Rastrigin function, we see that DEA seems preferable.  We observe that a seemingly straightforward objective surface from the Rosenbrock function poses challenge, and GA outperforms other EA methods. We also had cases [18] where PSO outperforms the rest.
 
+<!--
 Here is another set of experiments with an even higher parameter dimension, 12 instead of 8.  We can see some changes in the comparison and best-achieving optimizers.
 
 12-param alpine_one:
@@ -518,6 +519,25 @@ Here is another set of experiments with an even higher parameter dimension, 12 i
 12-param sphere:
 
 ![](./images/param-12/pair_sphere.png)
+-->
+
+Finally, we would like to point out that Scipy provides a version of DEA as well.  Here we present another set of experiment that include Scipy's version (SDEA).  In this experiment, we explore a much higher parameter space dimension, 20 instead of 8.
+
+20-param alpine_one:
+
+![](./images/param-20/pair_alpine_one.png)
+
+20-param rastrigin:
+
+![](./images/param-20/pair_rastrigin.png)
+
+20-param rosenbrock:
+
+![](./images/param-20/pair_rosenbrock.png)
+
+20-param sphere:
+
+![](./images/param-20/pair_sphere.png)
 
 In summary, optimization scenarios can be complex and counter intuitive.  In reality, we often have little idea of the objective surface, e.g. DNN parameter search, which is thought to be suitable for PSO [19].  It is important to select a suitable method based on the specific problem.  Sometimes it even requires hyper-parameter tuning, which can easily be another layer of optimization of its own.  This behavior is similar to other machine learning techniques, e.g. classifier selection.
 
