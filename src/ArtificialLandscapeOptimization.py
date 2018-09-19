@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-Implementation of land scape function and experiments for Strong blog..
+Implementation of landscape functions and experiments used for Strong blog.
 """
 
 from matplotlib import cm
@@ -27,9 +27,11 @@ def sphere(X):
 
 
 def rosenbrock(X):
-    return -sum(
-        [100 * (X[i+1] - X[i]**2)**2 + (1 - X[i])**2 for i in range(len(X) - 1)]
-    )
+    return -sum([100 * (X[i+1] - X[i]**2)**2 + (1 - X[i])**2 for i in range(len(X) - 1)])
+
+
+def styblinski_tang(X):
+    return -0.5 * sum([x**4 - (16 * x**2) + (5 * 5) for x in X])
 
 
 def alpine_one(X):
@@ -40,10 +42,11 @@ FUNCS = {
     'rastrigin': rastrigin,
     'sphere': sphere,
     'rosenbrock': rosenbrock,
+    'styblinski_tang': styblinski_tang,
     'alpine_one': alpine_one
 }
 
-OPTIONS = ['pso', 'ga', 'dea', 'nm', 'bfgs', 'pow', 'bh']
+OPTIONS = ['pso', 'ga', 'dea', 'nm', 'bfgs', 'pow', 'bh', 'sdea']
 
 
 def plot_functions(func='rastrigin'):
@@ -87,7 +90,7 @@ def _test_run(option, quiet=True, land_func=rastrigin, param_count=5):
 
     optimizer = OptimizerFactory.create(option=option, param_count=param_count)
     if option in ['pso', 'ga', 'dea']:
-        optimizer.optimizer.population_size = 25
+        optimizer.optimizer.population_size = 100
         optimizer.optimizer.max_iterations = 500
     best_params = optimizer.maximize(land_func)
     best_fitness = land_func(best_params)
@@ -191,7 +194,7 @@ def _test_batch(exp_size=3, param_count=5):
 
 
 if __name__ == '__main__':
-    # option = 'nm'
+    # option = 'sdea'
     # optimizer = OptimizerFactory.create(option=option, param_count=4)
     # if option in ['pso', 'ga', 'dea']:
     #     optimizer.optimizer.max_iterations = 3
@@ -199,6 +202,6 @@ if __name__ == '__main__':
     # result = optimizer.maximize(rosenbrock)
     # print(result)
 
-    _test_batch(exp_size=50, param_count=8)
+    _test_batch(exp_size=10, param_count=8)
     # _test_plot()
 
