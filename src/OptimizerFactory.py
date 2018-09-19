@@ -540,6 +540,78 @@ class _BHOptimizer(Optimizer):
                 best_parameters = parameters
 
 
+class _SDEAOptimizer(Optimizer):
+    """
+    Encapsulate the Nelder-Mead (nm) optimizer
+    """
+
+    def __init__(self, param_bounds):
+        """
+        Initialize the optimization environment
+        :param param_bounds: Legal parameter bounds
+        """
+
+        super(_SDEAOptimizer, self).__init__()
+
+        self.timeout = None
+        self.max_executions = 1
+        self.param_bounds = param_bounds
+        self.num_params = len(self.param_bounds)
+
+    def maximize(self, objective_function):
+        """
+        Attempt to find a maximum set of values for a specified fitness function
+        :param objective_function: The objective function to maximize
+        :return: The optimal parameters
+        """
+        assert (self.timeout is not None) or (self.max_executions is not None)
+
+        _log('# algorithm            = {0}'.format(self.__class__.__name__))
+        _log('# timeout              = {0}'.format(self.timeout))
+        _log('# max_executions       = {0}'.format(self.max_executions))
+        _log('# bounds               = {0}'.format(self.param_bounds))
+
+        end_time = None if self.timeout is None \
+            else datetime.datetime.now() + self.timeout
+
+        names = ['param{0}'.format(i) for i in xrange(self.num_params)]
+        _log('# {0}'.format('\t'.join(map(str, ['execution', 'state', 'score'] + names))))
+
+        execution = 0
+
+        def log_with_score(state, logged_parameters, convergence):
+            columns = [execution, state, objective_function(logged_parameters)]
+            columns.extend(logged_parameters)
+            _log('\t'.join(map(str, columns)))
+
+        best_score = -float('inf')
+
+        while True:
+            execution += 1
+
+            if self.max_executions is not None:
+                if execution > self.max_executions:
+                    return best_parameters
+            if end_time is not None:
+                if datetime.datetime.now() > end_time:
+                    return best_parameters
+
+            parameters = scipy.optimize.differential_evolution(
+                lambda x: -objective_function(x),
+                bounds=self.param_bounds,
+                callback=lambda x, convergence: log_with_score('sdea-iter', x, convergence),
+            )
+            parameters = parameters.x
+
+            score = objective_function(parameters)
+
+            log_with_score('sdea-out', parameters, convergence=None)
+
+            if score > best_score:
+                best_score = score
+                best_parameters = parameters
+
+
 class _PSOptimizer(Optimizer):
     """
     Encapsulate the Particle Swarm Optimizer (pso)
@@ -732,6 +804,9 @@ def create(option='nm', k=10, param_count=5):
 
     elif option == 'bh':
         optimizer = _BHOptimizer(param_bounds)
+
+    elif option == 'sdea':
+        optimizer = _SDEAOptimizer(param_bounds)
 
     elif option == 'ga':
         optimizer = _GAOptimizer(param_bounds)
