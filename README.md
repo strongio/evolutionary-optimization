@@ -497,6 +497,8 @@ All test functions used in this discussion are unconstrained.  The optimization 
 
 We present `evolutionary-optimization`, an open-source toolset for derivative-free black-box optimization algorithms. It focuses on evolutionary algorithms, which is a subset of evolutionary computation utilized in the field of artificial intelligence.  We can also refer them as generic population-based meta-heuristic optimization algorithms.
 
+Besides the software, this document provides a relatively thorough survey of derivative-free optimization algorithms.  Obviously, we do not intend to include all black-box methods, instead, we aim to cover the best-standing representative in each algorithm family.  For example, there exist many other swarm-based algorithms similar to PSO, such as Ant Colony Optimization, Bat Algorithm, and Bee Swarm Optimization.  Our implementation of GA is also not the only version.  There exist many variations with additional or different genetic manipulations of encoded solutions.
+
 In the experiment section, we see that non-population based algorithms can be preferable, especially in straightforward optimization problems, such as the high-dimension Sphere function.  When the objective surface is rough, such as the Rastrigin function, we see that DEA seems preferable.  We observe that a seemingly straightforward objective surface from the Rosenbrock function poses challenge, and GA outperforms other EA methods. We also had cases [18] where PSO outperforms the rest.
 
 <!--
@@ -519,7 +521,7 @@ Here is another set of experiments with an even higher parameter dimension, 12 i
 ![](./images/param-12/pair_sphere.png)
 -->
 
-We would like to point out that Scipy provides a version of DEA as well.  Here we present another set of experiment that include Scipy's version (SDEA).  In this experiment, we explore a much higher parameter space dimension, 20 instead of 8.  
+We would like to point out that Scipy provides a version of DEA as well.  Here we present another set of experiment that include Scipy's version (SDEA).  In this experiment, we explore a much higher parameter space dimension, 20 instead of 8 as in the first experiment.
 
 20-param alpine_one:
 
@@ -537,9 +539,9 @@ We would like to point out that Scipy provides a version of DEA as well.  Here w
 
 ![](./images/param-20/pair_sphere.png)
 
-We can see, in the above experiment, the best-achieving optimizers are not all the same as in with 8-param experiment.  We do not intend to use these experiments to draw sweeping conclusions about which optimizer is better.  These are already winners in their own category.  For instance, there are many population-based algorithms not included in this discussion, and more are actively been invented.  Some are shown better in certain scenarios, but people have learned to be sceptical whenever a claim is made about optimization superiority.
+We can see, in the above experiment, the best-achieving optimizers are not all the same as in with 8-param experiment.  We do not intend to use these results to draw sweeping conclusions about which optimizer is better.  No problem-specific tuning was performed on any optimizer.  These are already winners in their own category.  There are many population-based algorithms not included in this discussion, and more are actively been invented.  Some are shown better in certain scenarios, but people have learned to be sceptical whenever a claim is made about optimization superiority.  
 
-In summary, optimization scenarios can be complex and counter intuitive.  In reality, we often have little idea of the objective surface, e.g. DNN parameter search, which is thought to be suitable for PSO [19].  It is important to select a suitable method based on the specific problem.  Sometimes it even requires hyper-parameter tuning, which can easily be another layer of optimization of its own.  This behavior is similar to other machine learning techniques, e.g. classifier selection.
+In summary, optimization scenarios can be complex and counter intuitive.  In reality, we often have little idea of the objective surface, e.g. DNN parameter search, which is thought to be suitable for PSO [19].  It is important to select a suitable method based on the specific problem.  Sometimes it even requires hyper-parameter tuning, which can easily be another layer of optimization of its own.
 
 ## Related works
 
