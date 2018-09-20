@@ -200,19 +200,20 @@ class _GAOptimizer(Optimizer):
                 ' '.join([_format_float(param) for param in parameters])))
 
 
-class _NMOptimizer(Optimizer):
+class _SOptimizer(Optimizer):
     """
-    Encapsulate the Nelder-Mead (nm) optimizer
+    Encapsulate Scipy optimizers
     """
 
-    def __init__(self, param_bounds):
+    def __init__(self, param_bounds, option):
         """
         Initialize the optimization environment
         :param param_bounds: Legal parameter bounds
         """
+        assert option in ['nm', 'bfgs', 'pow', 'bh', 'sdea']
+        super(_SOptimizer, self).__init__()
 
-        super(_NMOptimizer, self).__init__()
-
+        self.option = option
         self.timeout = None
         self.max_executions = 1
         self.param_bounds = param_bounds
@@ -234,25 +235,32 @@ class _NMOptimizer(Optimizer):
             def make_random_parameter((low, high)):
                 return random.uniform(low, high)
 
-            return numpy.array(
-                [make_random_parameter(self.param_bounds[ii]) for ii in xrange(self.num_params)])
+            return numpy.array([
+                make_random_parameter(self.param_bounds[ii])
+                for ii in xrange(self.num_params)
+            ])
 
         end_time = None if self.timeout is None \
             else datetime.datetime.now() + self.timeout
 
         names = ['param{0}'.format(i) for i in xrange(self.num_params)]
-        _log('# {0}'.format('\t'.join(map(str, ['execution', 'state', 'score'] + names))))
+        _log('# {0}'.format('\t'.join(
+            map(str, ['execution', 'state', 'fitness'] + names)
+        )))
 
         execution = 0
 
-        def log_with_score(state, logged_parameters):
-            columns = [execution, state, objective_function(logged_parameters)]
-            columns.extend(logged_parameters)
+        def log_with_score(*args):
+            columns = [execution, args[0], objective_function(args[1])]
+            columns.extend(args[1])
             _log('\t'.join(map(str, columns)))
 
-        best_parameters = make_random_parameters()
-        best_score = objective_function(best_parameters)
-        log_with_score('init', best_parameters)
+        if self.option != 'sdea':
+            best_parameters = make_random_parameters()
+            best_score = objective_function(best_parameters)
+            log_with_score('init', best_parameters)
+        else:
+            best_score = -float('inf')
 
         while True:
             execution += 1
@@ -266,346 +274,39 @@ class _NMOptimizer(Optimizer):
 
             random_parameters = make_random_parameters()
 
-            log_with_score('nm-in', random_parameters)
+            log_with_score('{0}-in'.format(self.option), random_parameters)
 
-            parameters = scipy.optimize.minimize(
-                lambda x: -objective_function(x),
-                random_parameters,
-                method='nelder-mead',
-                callback=lambda x: log_with_score('nm-iter', x),
-            )
+            if self.option in ['nm', 'bfgs', 'pow']:
+                method = {
+                    'nm': 'nelder-mead', 'bfgs': 'BFGS', 'pow': 'POWELL'
+                }[self.option]
+                parameters = scipy.optimize.minimize(
+                    lambda x: -objective_function(x),
+                    random_parameters,
+                    method=method,
+                    callback=lambda x: log_with_score(
+                        '{0}-iter'.format(self.option), x
+                    ),
+                )
+            elif self.option == 'bh':
+                parameters = scipy.optimize.basinhopping(
+                    lambda x: -objective_function(x),
+                    random_parameters,
+                    callback=lambda x, y, z: log_with_score('bh-iter', x, y, z),
+                )
+            else:
+                parameters = scipy.optimize.differential_evolution(
+                    lambda x: -objective_function(x),
+                    bounds=self.param_bounds,
+                    callback=lambda x, convergence: log_with_score(
+                        'sdea-iter', x, convergence
+                    ),
+                )
             parameters = parameters.x
 
-            log_with_score('nm-out', parameters)
+            log_with_score('{0}-out'.format(self.option), parameters)
 
             score = objective_function(parameters)
-
-            if score > best_score:
-                best_score = score
-                best_parameters = parameters
-
-
-class _BFGSOptimizer(Optimizer):
-    """
-    Encapsulate the Nelder-Mead (nm) optimizer
-    """
-
-    def __init__(self, param_bounds):
-        """
-        Initialize the optimization environment
-        :param param_bounds: Legal parameter bounds
-        """
-
-        super(_BFGSOptimizer, self).__init__()
-
-        self.timeout = None
-        self.max_executions = 1
-        self.param_bounds = param_bounds
-        self.num_params = len(self.param_bounds)
-
-    def maximize(self, objective_function):
-        """
-        Attempt to find a maximum set of values for a specified fitness function
-        :param objective_function: The objective function to maximize
-        :return: The optimal parameters
-        """
-        assert (self.timeout is not None) or (self.max_executions is not None)
-
-        _log('# algorithm            = {0}'.format(self.__class__.__name__))
-        _log('# timeout              = {0}'.format(self.timeout))
-        _log('# max_executions       = {0}'.format(self.max_executions))
-
-        def make_random_parameters():
-            def make_random_parameter((low, high)):
-                return random.uniform(low, high)
-
-            return numpy.array(
-                [make_random_parameter(self.param_bounds[ii]) for ii in xrange(self.num_params)])
-
-        end_time = None if self.timeout is None \
-            else datetime.datetime.now() + self.timeout
-
-        names = ['param{0}'.format(i) for i in xrange(self.num_params)]
-        _log('# {0}'.format('\t'.join(map(str, ['execution', 'state', 'score'] + names))))
-
-        execution = 0
-
-        def log_with_score(state, logged_parameters):
-            columns = [execution, state, objective_function(logged_parameters)]
-            columns.extend(logged_parameters)
-            _log('\t'.join(map(str, columns)))
-
-        best_parameters = make_random_parameters()
-        best_score = objective_function(best_parameters)
-        log_with_score('init', best_parameters)
-
-        while True:
-            execution += 1
-
-            if self.max_executions is not None:
-                if execution > self.max_executions:
-                    return best_parameters
-            if end_time is not None:
-                if datetime.datetime.now() > end_time:
-                    return best_parameters
-
-            random_parameters = make_random_parameters()
-
-            log_with_score('bfgs-in', random_parameters)
-
-            parameters = scipy.optimize.minimize(
-                lambda x: -objective_function(x),
-                random_parameters,
-                method='BFGS',
-                callback=lambda x: log_with_score('bfgs-iter', x),
-            )
-            parameters = parameters.x
-
-            log_with_score('bfgs-out', parameters)
-
-            score = objective_function(parameters)
-
-            if score > best_score:
-                best_score = score
-                best_parameters = parameters
-
-
-class _POWOptimizer(Optimizer):
-    """
-    Encapsulate the Nelder-Mead (nm) optimizer
-    """
-
-    def __init__(self, param_bounds):
-        """
-        Initialize the optimization environment
-        :param param_bounds: Legal parameter bounds
-        """
-
-        super(_POWOptimizer, self).__init__()
-
-        self.timeout = None
-        self.max_executions = 1
-        self.param_bounds = param_bounds
-        self.num_params = len(self.param_bounds)
-
-    def maximize(self, objective_function):
-        """
-        Attempt to find a maximum set of values for a specified fitness function
-        :param objective_function: The objective function to maximize
-        :return: The optimal parameters
-        """
-        assert (self.timeout is not None) or (self.max_executions is not None)
-
-        _log('# algorithm            = {0}'.format(self.__class__.__name__))
-        _log('# timeout              = {0}'.format(self.timeout))
-        _log('# max_executions       = {0}'.format(self.max_executions))
-
-        def make_random_parameters():
-            def make_random_parameter((low, high)):
-                return random.uniform(low, high)
-
-            return numpy.array(
-                [make_random_parameter(self.param_bounds[ii]) for ii in xrange(self.num_params)])
-
-        end_time = None if self.timeout is None \
-            else datetime.datetime.now() + self.timeout
-
-        names = ['param{0}'.format(i) for i in xrange(self.num_params)]
-        _log('# {0}'.format('\t'.join(map(str, ['execution', 'state', 'score'] + names))))
-
-        execution = 0
-
-        def log_with_score(state, logged_parameters):
-            columns = [execution, state, objective_function(logged_parameters)]
-            columns.extend(logged_parameters)
-            _log('\t'.join(map(str, columns)))
-
-        best_parameters = make_random_parameters()
-        best_score = objective_function(best_parameters)
-        log_with_score('init', best_parameters)
-
-        while True:
-            execution += 1
-
-            if self.max_executions is not None:
-                if execution > self.max_executions:
-                    return best_parameters
-            if end_time is not None:
-                if datetime.datetime.now() > end_time:
-                    return best_parameters
-
-            random_parameters = make_random_parameters()
-
-            log_with_score('pow-in', random_parameters)
-
-            parameters = scipy.optimize.minimize(
-                lambda x: -objective_function(x),
-                random_parameters,
-                method='POWELL',
-                callback=lambda x: log_with_score('pow-iter', x),
-            )
-            parameters = parameters.x
-
-            log_with_score('pow-out', parameters)
-
-            score = objective_function(parameters)
-
-            if score > best_score:
-                best_score = score
-                best_parameters = parameters
-
-
-class _BHOptimizer(Optimizer):
-    """
-    Encapsulate the Nelder-Mead (nm) optimizer
-    """
-
-    def __init__(self, param_bounds):
-        """
-        Initialize the optimization environment
-        :param param_bounds: Legal parameter bounds
-        """
-
-        super(_BHOptimizer, self).__init__()
-
-        self.timeout = None
-        self.max_executions = 1
-        self.param_bounds = param_bounds
-        self.num_params = len(self.param_bounds)
-
-    def maximize(self, objective_function):
-        """
-        Attempt to find a maximum set of values for a specified fitness function
-        :param objective_function: The objective function to maximize
-        :return: The optimal parameters
-        """
-        assert (self.timeout is not None) or (self.max_executions is not None)
-
-        _log('# algorithm            = {0}'.format(self.__class__.__name__))
-        _log('# timeout              = {0}'.format(self.timeout))
-        _log('# max_executions       = {0}'.format(self.max_executions))
-
-        def make_random_parameters():
-            def make_random_parameter((low, high)):
-                return random.uniform(low, high)
-
-            return numpy.array(
-                [make_random_parameter(self.param_bounds[ii]) for ii in xrange(self.num_params)])
-
-        end_time = None if self.timeout is None \
-            else datetime.datetime.now() + self.timeout
-
-        names = ['param{0}'.format(i) for i in xrange(self.num_params)]
-        _log('# {0}'.format('\t'.join(map(str, ['execution', 'state', 'score'] + names))))
-
-        execution = 0
-
-        def log_with_score(state, xtrial, energy_trial, accept):
-            columns = [execution, state, objective_function(xtrial)]
-            columns.extend(xtrial)
-            _log('\t'.join(map(str, columns)))
-
-        best_parameters = make_random_parameters()
-        best_score = objective_function(best_parameters)
-
-        log_with_score('init', best_parameters, None, None)
-
-        while True:
-            execution += 1
-
-            if self.max_executions is not None:
-                if execution > self.max_executions:
-                    return best_parameters
-            if end_time is not None:
-                if datetime.datetime.now() > end_time:
-                    return best_parameters
-
-            random_parameters = make_random_parameters()
-
-            log_with_score('bh-in', random_parameters, None, None)
-
-            parameters = scipy.optimize.basinhopping(
-                lambda x: -objective_function(x),
-                random_parameters,
-                callback=lambda x, y, z: log_with_score('bh-iter', x, y, z),
-            )
-            parameters = parameters.x
-
-            score = objective_function(parameters)
-
-            log_with_score('bh-out', parameters, None, None)
-
-            if score > best_score:
-                best_score = score
-                best_parameters = parameters
-
-
-class _SDEAOptimizer(Optimizer):
-    """
-    Encapsulate the Nelder-Mead (nm) optimizer
-    """
-
-    def __init__(self, param_bounds):
-        """
-        Initialize the optimization environment
-        :param param_bounds: Legal parameter bounds
-        """
-
-        super(_SDEAOptimizer, self).__init__()
-
-        self.timeout = None
-        self.max_executions = 1
-        self.param_bounds = param_bounds
-        self.num_params = len(self.param_bounds)
-
-    def maximize(self, objective_function):
-        """
-        Attempt to find a maximum set of values for a specified fitness function
-        :param objective_function: The objective function to maximize
-        :return: The optimal parameters
-        """
-        assert (self.timeout is not None) or (self.max_executions is not None)
-
-        _log('# algorithm            = {0}'.format(self.__class__.__name__))
-        _log('# timeout              = {0}'.format(self.timeout))
-        _log('# max_executions       = {0}'.format(self.max_executions))
-        _log('# bounds               = {0}'.format(self.param_bounds))
-
-        end_time = None if self.timeout is None \
-            else datetime.datetime.now() + self.timeout
-
-        names = ['param{0}'.format(i) for i in xrange(self.num_params)]
-        _log('# {0}'.format('\t'.join(map(str, ['execution', 'state', 'score'] + names))))
-
-        execution = 0
-
-        def log_with_score(state, logged_parameters, convergence):
-            columns = [execution, state, objective_function(logged_parameters)]
-            columns.extend(logged_parameters)
-            _log('\t'.join(map(str, columns)))
-
-        best_score = -float('inf')
-
-        while True:
-            execution += 1
-
-            if self.max_executions is not None:
-                if execution > self.max_executions:
-                    return best_parameters
-            if end_time is not None:
-                if datetime.datetime.now() > end_time:
-                    return best_parameters
-
-            parameters = scipy.optimize.differential_evolution(
-                lambda x: -objective_function(x),
-                bounds=self.param_bounds,
-                callback=lambda x, convergence: log_with_score('sdea-iter', x, convergence),
-            )
-            parameters = parameters.x
-
-            score = objective_function(parameters)
-
-            log_with_score('sdea-out', parameters, convergence=None)
 
             if score > best_score:
                 best_score = score
@@ -789,24 +490,12 @@ def create(option='nm', k=10, param_count=5):
 
     # def lower_upper(target):
     #     return math.exp(math.log(target) - math.log(k)), target * k
-
     # param_bounds = map(lower_upper, targets)
+
     param_bounds = [[-1e6, +1e6] for _ in range(param_count)]
 
-    if option == 'nm':
-        optimizer = _NMOptimizer(param_bounds)
-
-    elif option == 'bfgs':
-        optimizer = _BFGSOptimizer(param_bounds)
-
-    elif option == 'pow':
-        optimizer = _POWOptimizer(param_bounds)
-
-    elif option == 'bh':
-        optimizer = _BHOptimizer(param_bounds)
-
-    elif option == 'sdea':
-        optimizer = _SDEAOptimizer(param_bounds)
+    if option in ['nm', 'bfgs', 'pow', 'bh', 'sdea']:
+        optimizer = _SOptimizer(param_bounds, option)
 
     elif option == 'ga':
         optimizer = _GAOptimizer(param_bounds)
