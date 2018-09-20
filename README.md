@@ -385,7 +385,7 @@ Basin-hopping is a two-phase method that combines a global stepping algorithm wi
 
 ## Evaluation
 
-In applied mathematics, test functions, known as artificial landscapes, are useful to evaluate characteristics of optimization algorithms.  In this section, we will apply a few well-known artificial landscape functions to test the optimization methods included in our `evolutionary-optimization`.
+In applied mathematics, test functions, known as artificial landscapes, are useful to evaluate characteristics of optimization algorithms.  In this section, we will apply a few well-known artificial landscape functions to test the optimization methods included in our `evolutionary-optimization` package.
 
 ### Alpine one
 
@@ -403,7 +403,7 @@ Here is a comparison of optimizer performances when the optimization dimension i
 
 ![](./images/param-8/pair_alpine_one.png)
 
-We see BFGS is significantly under-performing that other methods.  This is expected.  BFGS estimates derivatives from iterations.  Since alpine_one is a non-differentiable function, it is not suitable for derivative-aware optimization algorithms, such as BFGS or gradient descent.
+We see BFGS is significantly under-performing than other methods.  This is expected.  BFGS estimates derivatives from iterations.  Since alpine_one is a non-differentiable function, it is not suitable for derivative-aware optimization algorithms, such as BFGS or gradient descent.
 
 
 ### Rastrigin
@@ -466,12 +466,12 @@ Here is a comparison of optimizer performances when the optimization dimension i
 
 ![](./images/param-8/pair_sphere.png)
 
-We see here almost all methods reached a tight and accuracy optima, with DEA, BFGS, POW, BH being the best.  The optimization is a simple sphere.  It should be a straightforward task, and it most suitable for derivative-aware methods.
+We see here almost all methods reached a tight and accuracy optima, with DEA, BFGS, POW, BH being the best.  The optimization is a simple sphere.  It should be a straightforward task, and it is most suitable for derivative-aware methods, such as BFGS and gradient descent.
 
 
 ## Considerations
 
-We would like to highlight the following considerations when using `evolutionary-optimization` or any black-box derivative-free optimization algorithms.
+We would like to highlight the following considerations when using the `evolutionary-optimization` package or any black-box derivative-free optimization algorithms.
 
 ### Parameter space rescaling
 
@@ -483,11 +483,11 @@ Absolute optima is *not* always the goal even when the problem formulation is op
 
 ### Comparison with derivative-aware optimizers
 
-Black-box optimizers are not meant to be compared with derivative-aware optimizers.  If we know the analytical form of an objective function, and the derivatives (first, second order) are not crazy to obtain, it's always advisable to take advantage of the derivative information.  This, however, is not feasible in many cases, probably the majority engineering scenarios.  In addition, black-box optimizers enables a drop-and-go solution that impose no assumption in the objective function as long as we can evaluate it's value given a parameter set.
+Black-box optimizers are not meant to be compared with derivative-aware optimizers.  If we know the analytical form of an objective function, and the derivatives (first, second order) are not crazy to obtain, it's always advisable to take advantage of the derivative information.  This, however, is not feasible in many cases, probably the majority engineering scenarios.  In addition, black-box optimizers enables a drop-and-go solution that impose no assumption in the objective function as long as we can evaluate it's value given a parameter set, so it's lightweight and could be preferred even at the cost of time or even convergence.
 
 ### Dimensionality
 
-Black-box optimization algorithms are light weight but, by nature, they are not capable of dealing with huge parameter dimensions.  In cases where function formulation can easily be scaled to have hundreds, thousands, or even more parameters, black-box optimizations would not work.  For instance, topic modeling, structure analysis, and DNN, are in this category.  Rigorous optimization approaches that make use of the derivatives should be considered, such as back propagation for DNN and quadratic programming in structure analysis.  If derivatives are unattainable, then sampling techniques such as MCMC could be a possibility.
+Black-box optimization algorithms are lightweight but, by nature, they are not capable of dealing with huge parameter dimensions.  In cases where function formulation can easily be scaled to have hundreds, thousands, or even more parameters, black-box optimizations would not work.  For instance, topic modeling, structure analysis, and DNN, are in this category.  Rigorous optimization approaches that make use of the derivatives should be considered, such as back propagation combined with gradient descent for DNN and quadratic programming in structure analysis.  If derivatives are unattainable, then sampling techniques such as MCMC could be a possibility.
 
 ### Constraints
 
