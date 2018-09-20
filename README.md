@@ -1,15 +1,15 @@
 # Evolutionary Optimization
 
-Black-box and derivative-free optimization is a discipline in mathematical optimization that does not use derivative information in the classical sense to find optimal solutions <sup>[15]</sup>. The algorithm may query the value of objective function `f(x)` for a point `x`, but it does not obtain gradient information, and in particular it cannot make any assumptions on the analytic form of `f`.  Information about the derivative of `f` is not always available, unreliable or impractical to obtain. For example, `f` might be non-smooth, or time-consuming to evaluate, or in some way noisy. Black-box and derivative-free optimization methods are often the only realistic and practical tools available to engineers working on simulation-based design. <sup>[16]</sup>
+Black-box and derivative-free optimization is a discipline in mathematical optimization that does not use derivative information in the classical sense to find optimal solutions <sup>[15]</sup>. The algorithm may query the value of objective function `f(x)` for a point `x`, but it does not obtain gradient information, and in particular it cannot make any assumptions on the analytic form of `f`.  Information about the derivative of `f` is not always available, unreliable or impractical to obtain. For example, `f` might be discrete, non-smooth, time-consuming to evaluate, or in some way noisy. Black-box and derivative-free optimization methods are often the only realistic and practical tools available to engineers working on simulation-based design. <sup>[16]</sup>
 
 We present `evolutionary-optimization`, a collection of black-box optimizers with a focus on evolutionary algorithms (EA).  EA is a subset of evolutionary computation in the domain of artificial intelligence. <sup>[14]</sup>  We can also refer them as generic population-based meta-heuristic optimization algorithms. <sup>[17]</sup>
 
 For the comparison, as well as the completeness, we also include non-population-based derivative-free optimizations from `Scipy`.  Together we present a toolset of 7 drop-and-go black-box optimizers:
 
 Population-based algorithms (EA optimizers):
-- GA: Genetic Algorithms
+- GA: Genetic Algorithm
 - PSO: Particle Swarm Optimization
-- DEA: Differential Evolution Optimization
+- DEA: Differential Evolution Algorithm
 
 Non-population-based algorithms (Scipy's implementation):
 - NM: Nelder-Mead Optimization
@@ -57,15 +57,15 @@ best_params = optimizer.maximize(objective_function)
 best_fitness = objective_function(best_params)
 ```
 
-In the following sections, we will detail each optimization algorithm along with its progression report.
+In the following sections, we will detail the theoretical background of each optimization algorithm followed by its progression report.
 
-### Genetic algorithms (GA)
+### Genetic algorithm (GA)
 
 A Genetic Algorithm (GA) is a type of evolutionary algorithm. This optimization technique gained popularity through the work of John Holland in the early 1970s <sup>[2]</sup>. It operates by encoding potential solutions as simple chromosome-like data structures and then applying genetic alterations to those structures. Over many iterations, its population of chromosomes evolves toward better solutions, which it determines based on fitness values returned from an objective function. The algorithm typically terminates when the diversity of its population reaches a predetermined minimum, a maximum length of time expires, or a maximum number of iterations has completed.
 
 ![](images/gadiagram.svg)
 
-GAs typically operate in three phases.  See the figure above, where arrows indicate transitions into the next genetic operation within one generation.  In one iteration of the genetic algorithm&rsquo;s evolution, it operates in three stages:
+GAs typically operate in three phases.  See the figure above, where arrows indicate transitions into the next genetic operation within one generation.  In one iteration of the genetic algorithm's evolution, it operates in three stages:
 
 1. Selection, where it chooses a relatively fit subset of individuals for breeding;
 2. Crossover, where it recombines pairs of breeders to create a new population; 
@@ -73,11 +73,11 @@ GAs typically operate in three phases.  See the figure above, where arrows indic
 
 A variety of selection schemes exist. In Roulette Wheel Selection (RWS) <sup>[3]</sup>, the algorithm selects individuals based on their relative fitness within the population.  While RWS works by repeatedly sampling the population, a variation of RWS, Stochastic Universal Sampling (SUS) <sup>[4]</sup>, uses a single random value to sample all breeders by choosing them at evenly spaced intervals; this gives less fit individuals a greater chance to breed. RWS and SUS are both examples of fitness proportionate selection, but other selection schemes are based only on rank, and these are particularly beneficial when the lower and upper bounds of a fitness function are hard to determine. For example, in Tournament Selection <sup>[5]</sup>, the algorithm selects an individual with the highest fitness value from a random subset of the population.
 
-Several Crossover schemes exist. In One Point Crossover, the algorithm chooses a single point on both parents&rsquo; chromosomes, and it forms the child by concatenating all data prior to that point from the first parent with all data after that point from the second parent. In Two Point Crossover, the algorithm instead chooses two points, which splits the parents&rsquo; chromosomes into three regions; the algorithm then forms the child by concatenating the first region from the first parent, the second region from the second parent, and the third region from the first parent. In Uniform Crossover, each position on the child&rsquo;s chromosome has equal opportunity to inherit its data from either parent. While nature serves as the inspiration for One and Two Point Crossover, Uniform Crossover <sup>[6]</sup> has no such biological analogue.
+Several Crossover schemes exist. In One Point Crossover, the algorithm chooses a single point on both parents' chromosomes, and it forms the child by concatenating all data prior to that point from the first parent with all data after that point from the second parent. In Two Point Crossover, the algorithm instead chooses two points, which splits the parents' chromosomes into three regions; the algorithm then forms the child by concatenating the first region from the first parent, the second region from the second parent, and the third region from the first parent. In Uniform Crossover, each position on the child's chromosome has equal opportunity to inherit its data from either parent. While nature serves as the inspiration for One and Two Point Crossover, Uniform Crossover <sup>[6]</sup> has no such biological analogue.
 
 Every position on every chromosome has a certain probability to mutate, which helps the population maintain or even improve its genetic diversity. Several variants of this technique exist. In Uniform Mutation <sup>[7]</sup>, when a position mutates, the algorithm replaces its value with a new value, chosen at random, between a predetermined lower and upper bound. In another variant, Gaussian Mutation <sup>[8]</sup>, when a position mutates, its current value increases or decreases based on a Gaussian random value.
 
-Here is an example output of the progression of GA with the specified hyper-parameters:
+Here is an example output of the progression of GA.  All parameters controlling this three-stage "genetic" evolution are tunable.
 
 ```
 #
@@ -148,7 +148,7 @@ Each individual contains a current position, which evaluates to a fitness value.
 Three vectors applied to a particle at position <b>x</b><sub><i>i</i></sub> in one iteration of a PSO:
 
 - A cognitive influence urges the particle toward its previous best <b>p</b><sub><i>i</i></sub>
-- A social influence urges the particle toward the swarm&rsquo;s previous best <b>p</b><sub><i>g</i></sub>, 
+- A social influence urges the particle toward the swarm's previous best <b>p</b><sub><i>g</i></sub>, 
 - Its own velocity <b>v</b><sub><i>i</i></sub> provides inertia, allowing it to overshoot local minima and explore unknown regions of the problem domain.
 
 In PSO, we represent the position of the <i>i</i>th particle as <b>x</b><sub><i>i</i></sub> = (<i>x<sub>i,1</sub>, x<sub>i,2</sub>, &hellip; x<sub>i,D</sub></i>) and its velocity as <b>v</b><sub><i>i</i></sub> = (<i>v<sub>i,1</sub>, v<sub>i,2</sub>, &hellip; v<sub>i,D</sub></i>), where <i>D</i> is the number of dimensions in the parameter space. We represent the particle's previous position with its best fitness as <b>p</b><sub><i>i</i></sub> = (<i>p<sub>i,1</sub>, p<sub>i,2</sub>, &hellip; p<sub>i,D</sub></i>). During each iteration, the algorithm adjusts the velocity <b>v</b> and position <b>x</b> according to the following equations:
@@ -158,14 +158,12 @@ In PSO, we represent the position of the <i>i</i>th particle as <b>x</b><sub><i>
     <br/>
     <b>x</b><sup>'</sup><sub style='position: relative; left: -.3em;'><i>i,d</i></sub> &larr; <b>x</b><sub><i>i,d</i></sub> + <b>v</b><sub><i>i,d</i></sub>.
 
-
 where <i>r<sub>p</sub></i> and <i>r<sub>g</sub></i> are two random values between zero and one, and <i>&Phi;<sub>p</sub></i> and <i>&Phi;<sub>g</sub></i> are two positive constants representing cognitive and social influences. As Shi and Eberhart demonstrated <sup>[10]</sup>, it can be beneficial to include a constant <i>&omega;</i>, which helps balance the global and local search forces. This term directly affects the inertia of the particle.
 
 <p  style="text-align:center">
     <b>v</b><sup>'</sup><sub style='position: relative; left: -.3em;'><i>i,d</i></sub> &larr; <i>&omega;</i> &sdot; <b>v</b><sub><i>i,d</i></sub> + <i>&Phi;<sub>p</sub> &sdot;r<sub>p</sub> &sdot;</i> (<b>p</b><sub><i>i,d</i></sub> - <b>x</b><sub><i>i,d</i></sub>) + <i>&Phi;<sub>g</sub> &sdot;r<sub>g</sub> &sdot;</i> (<b>p</b><sub><i>g,d</i></sub> - <b>x</b><sub><i>i,d</i></sub>)
 
-Here is an example output of the progression of PSO with the specified hyper-parameters:
-
+Here is an example output of the progression of PSO.  The tunable parameters include the ones controlling swarm initialization and the four constants used in the above equation.  As we can see this is a smaller set of hyper-parameters, and it therefore easier in practice to tune.
 ```
 #
 # 2018-09-17 11:17:58.573911
@@ -238,7 +236,7 @@ Differential evolution algorithm (DEA) first developed by Storn and Price in 199
 
 More precisely, the operator iteratively copies consecutive parameters of the difference vector to the offspring until a random number taken in range [0, 1] is greater than or equal to <i>p</i>.  If the offspring <i>o</i> is better than <i>j</i> then <i>j</i> is replaced by <i>o</i>.  This process continues untila maximum length of time expires or a maximum number of iterations is reached.
 
-Here is an example output of the progression of DEA with the specified hyper-parameters:
+Here is an example output of the progression of DEA.  The tunable parameters include the ones controlling population initialization and the two constants used in the above equation.  As we can see this is a even smaller set of hyper-parameters, and it is indeed the easiest to tune in practice.
 
 ```
 #
@@ -319,7 +317,7 @@ Nelder-Mead method, or downhill simplex method, was developed by John Nelder and
 
 #### Derivative-free Broyden–Fletcher–Goldfarb–Shanno optimization (BFGS)
 
-For the comparison we also include BFGS in this discussion. BFGS is not a true derivative-free black-box method because it approximates derivatives using the gradient differences across iterations.  BFGS is in the family of quasi-Newton methods, which are used as alternatives to Newton's method when Hessian is unavailable or too expensive to compute at every iteration.
+For the comparison we also include BFGS in this discussion. BFGS was independently discovered and published in the late 1960s and early 1970s by four researchers Broyden(B), Fletcher(F), Goldfarb(G), and Shanno(S).  BFGS is not a true derivative-free black-box method because it approximates derivatives using the gradient differences across iterations.  BFGS is in the family of quasi-Newton methods, which are used as alternatives to Newton's method when Hessian is unavailable or too expensive to compute at every iteration.
 
 ```
 #
@@ -364,7 +362,7 @@ Powell's conjugate direction method, is an algorithm proposed by Michael J. D. P
 
 #### Basin-hopping optimization (BH)
 
-Basin-hopping is a two-phase method that combines a global stepping algorithm with local minimization at each step. It is designed to mimic the natural process of energy minimization of clusters of atoms. It works well for problems with "funnel-like, but rugged" energy landscapes <sup>[13]</sup>.  It can be considered as an ensemble that takes the Monte Carlo approach for the global phase and a local optimizer of choice for the local phase.  Without the local optimizer, this procedure is simulated annealing, a Monte Carlo based black-box optimization algorithm.
+Basin-hopping is a two-phase method that combines a global stepping algorithm with local minimization at each step. It is designed to mimic the natural process of energy minimization of clusters of atoms. It works well for problems with "funnel-like, but rugged" energy landscapes <sup>[13]</sup>.  It can be considered as an ensemble that takes the Monte Carlo approach for the global phase and a local optimizer of choice for the local phase.  Without the latter, this procedure is simulated annealing, a Monte Carlo based black-box optimization algorithm.
 
 ```
 #
@@ -521,7 +519,7 @@ Here is another set of experiments with an even higher parameter dimension, 12 i
 ![](./images/param-12/pair_sphere.png)
 -->
 
-Finally, we would like to point out that Scipy provides a version of DEA as well.  Here we present another set of experiment that include Scipy's version (SDEA).  In this experiment, we explore a much higher parameter space dimension, 20 instead of 8.
+We would like to point out that Scipy provides a version of DEA as well.  Here we present another set of experiment that include Scipy's version (SDEA).  In this experiment, we explore a much higher parameter space dimension, 20 instead of 8.  
 
 20-param alpine_one:
 
@@ -538,6 +536,8 @@ Finally, we would like to point out that Scipy provides a version of DEA as well
 20-param sphere:
 
 ![](./images/param-20/pair_sphere.png)
+
+We can see, in the above experiment, the best-achieving optimizers are not all the same as in with 8-param experiment.  We do not intend to use these experiments to draw sweeping conclusions about which optimizer is better.  These are already winners in their own category.  For instance, there are many population-based algorithms not included in this discussion, and more are actively been invented.  Some are shown better in certain scenarios, but people have learned to be sceptical whenever a claim is made about optimization superiority.
 
 In summary, optimization scenarios can be complex and counter intuitive.  In reality, we often have little idea of the objective surface, e.g. DNN parameter search, which is thought to be suitable for PSO [19].  It is important to select a suitable method based on the specific problem.  Sometimes it even requires hyper-parameter tuning, which can easily be another layer of optimization of its own.  This behavior is similar to other machine learning techniques, e.g. classifier selection.
 
