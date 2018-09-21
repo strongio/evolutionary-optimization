@@ -317,7 +317,7 @@ Nelder-Mead method, or downhill simplex method, was developed by John Nelder and
 
 #### Derivative-free Broyden–Fletcher–Goldfarb–Shanno optimization (BFGS)
 
-For the comparison we also include BFGS in this discussion. BFGS was independently discovered and published in the late 1960s and early 1970s by four researchers Broyden(B), Fletcher(F), Goldfarb(G), and Shanno(S).  BFGS is not a true derivative-free black-box method because it approximates derivatives using the gradient differences across iterations.  BFGS is in the family of quasi-Newton methods, which are used as alternatives to Newton's method when Hessian is unavailable or too expensive to compute at every iteration.
+For the comparison we also include BFGS in this discussion. BFGS was independently discovered and published in the late 1960s and early 1970s by four researchers, Broyden(B), Fletcher(F), Goldfarb(G), and Shanno(S).  BFGS is not a true derivative-free black-box method because it approximates derivatives using the gradient differences across iterations.  BFGS is in the family of quasi-Newton methods, which are used as alternatives to Newton's method when Hessian is unavailable or too expensive to compute at every iteration.
 
 ```
 #
@@ -339,7 +339,7 @@ For the comparison we also include BFGS in this discussion. BFGS was independent
 
 #### Powell optimization (POW)
 
-Powell's conjugate direction method, is an algorithm proposed by Michael J. D. Powell in 1964 <sup>[20]</sup> for finding a local minimum of a function.  The method minimises the function by a bi-directional search along each search vector, in turn. The bi-directional line search along each search vector can be done by e.g. Golden-section search.  Similar to NM and other optimizers, algorithm iterates an arbitrary number of times until no significant improvement is made.
+Powell's conjugate direction method, is an algorithm proposed by Michael J. D. Powell in 1964 <sup>[20]</sup> for finding a local minimum of a function.  The method minimises the function by a bi-directional search along each search vector, in turn. The bi-directional line search along each search vector can be done by e.g. Golden Section Search.  Similar to NM and other optimizers, algorithm iterates an arbitrary number of times until no significant improvement is made.
 
 ```
 #
@@ -362,7 +362,7 @@ Powell's conjugate direction method, is an algorithm proposed by Michael J. D. P
 
 #### Basin-hopping optimization (BH)
 
-Basin-hopping is a two-phase method that combines a global stepping algorithm with local minimization at each step. It is designed to mimic the natural process of energy minimization of clusters of atoms. It works well for problems with "funnel-like, but rugged" energy landscapes <sup>[13]</sup>.  It can be considered as an ensemble that takes the Monte Carlo approach for the global phase and a local optimizer of choice for the local phase.  Without the latter, this procedure is simulated annealing, a Monte Carlo based black-box optimization algorithm.
+Basin-hopping, introduced in 1997 <sup>[21]</sup>, is a two-phase method that combines a global stepping algorithm with local minimization at each step. It is designed to mimic the natural process of energy minimization of clusters of atoms. It works well for problems with "funnel-like, but rugged" energy landscapes <sup>[13]</sup>.  It can be considered as an ensemble that takes the Monte Carlo approach for the global phase and a local optimizer of choice for the local phase.  Without the latter, this procedure is Simulated Annealing, a Monte Carlo based black-box optimization algorithm.
 
 ```
 #
@@ -447,7 +447,7 @@ Here is a comparison of optimizer performances when the optimization dimension i
 
 ![](./images/param-8/pair_rosenbrock.png)
 
-We see here BH and all population-based methods outperforming NM, BFGS, and POW.  The optimization surface seems relatively straightforward, most non-population based optimizer however, fail.  BH has the ingredient of Monte Carlo that creates a somewhat similar behavior as population-base algorithms.
+We see here BH and all population-based methods outperform NM, BFGS, and POW.  The optimization surface seems relatively straightforward, most non-population based optimizer however, fail.  BH has the ingredient of Monte Carlo that creates a somewhat similar behavior as population-base algorithms.
 
 
 ### Sphere
@@ -487,11 +487,11 @@ Black-box optimizers are not meant to be compared with derivative-aware optimize
 
 ### Dimensionality
 
-Black-box optimization algorithms are lightweight but, by nature, they are not capable of dealing with huge parameter dimensions.  In cases where function formulation can easily be scaled to have hundreds, thousands, or even more parameters, black-box optimizations would not work.  For instance, topic modeling, structure analysis, and DNN, are in this category.  Rigorous optimization approaches that make use of the derivatives should be considered, such as back propagation combined with gradient descent for DNN and quadratic programming in structure analysis.  If derivatives are unattainable, then sampling techniques such as MCMC could be a possibility.
+Black-box optimization algorithms are lightweight but, by nature, they are not capable of dealing with huge parameter dimensions.  In cases where function formulation can easily be scaled to have hundreds, thousands, or even more parameters, black-box optimizations would not work.  For instance, topic modeling, structure analysis, and DNN, are in this category.  Rigorous optimization approaches that make use of the derivatives should be considered, such as back propagation and gradient descent for DNN and quadratic programming in structure analysis.  If derivatives are unattainable, then sampling techniques such as MCMC could be a possibility.
 
 ### Constraints
 
-All test functions used in this discussion are unconstrained.  The optimization method in `evolutionary-optimization` are created to work with unconstrained problems.  This does not mean that these optimizers are incompatible with all constraints.  For example, a simple approach to incorporate range constraints is by assigning dis-favorable value, e.g. negative infinity, in the objective function when parameters are out of bounds.  This, however, is a relatively dangerous maneuver and often require extra care during parameter initialization, otherwise optimizers may stuck in a "death" zone and never recover.
+All test functions used in this discussion are unconstrained.  The optimization methods in `evolutionary-optimization` are created to work with unconstrained problems.  This does not mean that these optimizers are incompatible with all constraints.  For example, a simple approach to incorporate range constraints is by assigning dis-favorable value, e.g. negative infinity, in the objective function when parameters are out of bounds.  This, however, is a relatively dangerous maneuver and often requires extra care during parameter initialization, otherwise optimizers may stuck in a "death" zone and never recover.
 
 ## Summary
 
@@ -499,7 +499,7 @@ We present `evolutionary-optimization`, an open-source toolset for derivative-fr
 
 Besides the software, this document provides a relatively thorough survey of derivative-free optimization algorithms.  Obviously, we do not intend to include all black-box methods.  Instead, we aim to cover the best-standing representative in each algorithm family.  For example, there exist many other swarm-based algorithms similar to PSO, such as Ant Colony Optimization, Bat Algorithm, and Bee Swarm Optimization.  Our implementation of GA is also not the only version.  There exist many variations with additional or different genetic manipulations of encoded solutions.
 
-In the experiment section, we see different problems prefer different methods.  Non-population based algorithms can be preferable, especially in straightforward optimization problems, such as the high-dimension Sphere function.  When the objective surface is rough, such as the Rastrigin function, we see that DEA could be preferable.  We observe that a seemingly straightforward objective surface from the Rosenbrock function poses challenge, and GA outperforms other EA methods. We also had cases [18] where PSO outperforms the rest.
+In the experiment section, we see different problems prefer different methods.  Non-population based algorithms can be preferable, especially in straightforward optimization problems, such as the high-dimension Sphere function.  When the objective surface is rough, such as the Rastrigin function, we see that DEA could be preferable.  We observe that a seemingly straightforward objective surface from the Rosenbrock function can pose challenge, and GA outperforms other EA methods. We also had cases [18] where PSO outperforms the rest.
 
 <!--
 Here is another set of experiments with an even higher parameter dimension, 12 instead of 8.  We can see some changes in the comparison and best-achieving optimizers.
@@ -539,9 +539,9 @@ We would like to point out that Scipy provides a version of DEA as well.  Here w
 
 ![](./images/param-20/pair_sphere.png)
 
-We can see that the best-achieving optimizers are not all the same as in the 8-param experiment.  We do not intend to use these results to draw sweeping conclusions about which optimizer is better.  No problem-specific tuning was performed on any optimizer.  These methods are already proven winners over time.  There are many algorithms not included in this discussion, and more are actively been invented.  Some are shown better in certain scenarios, but people have learned to be sceptical whenever a claim is made about optimization superiority, until they are proven repeatedly in other domains, and that is where our selection of algorithms comes from.
+We can see that the best-achieving optimizers are not all the same as in the 8-param experiment.  We do not intend to use these results to draw sweeping conclusions about which optimizer is better.  No problem-specific tuning was performed on any optimizer.  These methods are already proven winners over time.  There are many algorithms not included in this discussion, and more are actively been invented.  Some are shown better in certain scenarios, but people have learned to be sceptical whenever a claim is made about optimization superiority, unless they are proven repeatedly in other domains, and that is where our selection of algorithms comes from.
 
-Optimization scenarios can be complex and counter intuitive.  In reality, we often have little idea of the objective surface, e.g. DNN parameter search, which is thought to be suitable for PSO [19].  It is important to select a suitable method based on the specific problem.  Sometimes it even requires hyper-parameter tuning, which can easily be another layer of optimization of its own.
+In summary, optimization scenarios can be complex and counter intuitive.  In reality, we often have little idea of the objective surface, e.g. DNN parameter search, which is thought to be suitable for PSO [19].  It is important to select a suitable method based on the specific problem.  Sometimes it even requires hyper-parameter tuning, which can easily be another layer of optimization of its own.
 
 ## Related works
 
@@ -584,3 +584,5 @@ Optimization scenarios can be complex and counter intuitive.  In reality, we oft
 19. Qolomany, B., Maabreh, M., Al-Fuqaha, A., Gupta, A. and Benhaddou, D., 2017, June. Parameters optimization of deep learning models using Particle swarm optimization. In Wireless Communications and Mobile Computing Conference (IWCMC), 2017 13th International (pp. 1285-1290). IEEE.
 
 20. Powell, M.J., 1964. An efficient method for finding the minimum of a function of several variables without calculating derivatives. The computer journal, 7(2), pp.155-162.
+
+21. Wales, D J, and Doye J P K, Global Optimization by Basin-Hopping and the Lowest Energy Structures of Lennard-Jones Clusters Containing up to 110 Atoms. Journal of Physical Chemistry A, 1997, 101, 5111.
