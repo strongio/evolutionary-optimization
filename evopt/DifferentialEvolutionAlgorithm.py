@@ -82,7 +82,7 @@ class Agent(object):
         Randomize the parameters of this instance to values between 0 and 1.
         :param parameter_count: The number of parameters.
         """
-        self.__parameters = [random.random() for _ in xrange(parameter_count)]
+        self.__parameters = [random.random() for _ in range(parameter_count)]
         self.__fitness = None
 
 
@@ -99,7 +99,7 @@ class Population(object):
         :fitness_function: The fitness function.
         :return: A new instance of the class.
         """
-        self.__agents = [Agent(fitness_function) for _ in xrange(population_size)]
+        self.__agents = [Agent(fitness_function) for _ in range(population_size)]
         for agent in self.__agents:
             agent.randomize(parameter_count)
 
@@ -246,7 +246,7 @@ class Optimizer(object):
                         return n
 
             # Loop over all agents in the population, each time selecting three other agents randomly.
-            for agent_index_0 in xrange(self.population_size):
+            for agent_index_0 in range(self.population_size):
                 agent_index_1 = exclusive_random([agent_index_0])
                 agent_index_2 = exclusive_random([agent_index_0, agent_index_1])
                 agent_index_3 = exclusive_random([agent_index_0, agent_index_1, agent_index_2])
@@ -264,7 +264,7 @@ class Optimizer(object):
                 r = random.randint(0, parameter_count)
 
                 # Compute the agents new parameters.
-                for i in xrange(parameter_count):
+                for i in range(parameter_count):
                     if i == r or random.random() < self.crossover_probability:
                         candidate[i] = agent_1[i] + self.differential_weight * (agent_2[i] - agent_3[i])
 

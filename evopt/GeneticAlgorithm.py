@@ -161,7 +161,7 @@ class GaussianInitialisation(Initialisation):
 
         population = []
         while len(population) < population_size:
-            genome = [generate() for _ in xrange(genome_length)]
+            genome = [generate() for _ in range(genome_length)]
             fitness = fitness_function(genome)
             individual = Individual(genome, fitness)
             population.append(individual)
@@ -200,7 +200,7 @@ class UniformInitialisation(Initialisation):
 
         population = []
         while len(population) < population_size:
-            genome = [generate() for _ in xrange(genome_length)]
+            genome = [generate() for _ in range(genome_length)]
             fitness = fitness_function(genome)
             individual = Individual(genome, fitness)
             population.append(individual)
@@ -523,7 +523,7 @@ class UniformCrossover(Crossover):
                 genome.append(second.genome[index])
                 counts[1] += 1
 
-        for i in xrange(n - 1):
+        for i in range(n - 1):
             choose(i)
 
         if counts[0] == 0:

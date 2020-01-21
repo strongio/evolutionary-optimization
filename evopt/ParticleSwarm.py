@@ -119,12 +119,12 @@ class Optimizer(object):
         context = Context(self)
 
         # Create the initial particles.
-        for _ in xrange(self.population_size):
+        for _ in range(self.population_size):
             particle = Particle()
             context.particles.append(particle)
 
             # Initialise the particle's position with a uniformly distributed random vector.
-            particle.current.positions = [random.uniform(0.0, 1.0) for _ in xrange(parameter_count)]
+            particle.current.positions = [random.uniform(0.0, 1.0) for _ in range(parameter_count)]
             particle.current.fitness = fitness_function_wrapper(tuple(particle.current.positions))
 
             # Initialise the particle's best known position to its initial position.
@@ -135,7 +135,7 @@ class Optimizer(object):
             initialise_velocity = lambda: random.uniform(
                 -self.max_initial_velocity,
                 +self.max_initial_velocity)
-            particle.velocities = [initialise_velocity() for _ in xrange(parameter_count)]
+            particle.velocities = [initialise_velocity() for _ in range(parameter_count)]
 
         # Initially assign the best solution for the swarm.
         context.best.fitness = context.particles[0].best.fitness
@@ -172,7 +172,7 @@ class Optimizer(object):
                 r_swarm = random.uniform(0.0, 1.0)
 
                 # Loop over all positions and velocities.
-                for i in xrange(parameter_count):
+                for i in range(parameter_count):
                     velocity = particle.velocities[i]
                     position = particle.current.positions[i]
                     best_particle_position = particle.best.positions[i]

@@ -6,9 +6,9 @@ import numpy
 import random
 import scipy.optimize
 
-import GeneticAlgorithm
-import ParticleSwarm
-import DifferentialEvolutionAlgorithm
+import evopt.GeneticAlgorithm as GeneticAlgorithm
+import evopt.ParticleSwarm as ParticleSwarm
+import evopt.DifferentialEvolutionAlgorithm as DifferentialEvolutionAlgorithm
 
 
 def _format_float(n, length=20, digits=8):
@@ -17,8 +17,8 @@ def _format_float(n, length=20, digits=8):
     :param n: A float value
     :return: The float value padded with spaces
     """
-    fmt = '{{:.{0}f}}'.format(digits)
-    return '{{0: >{0}}}'.format(length).format(fmt.format(n))
+    rounded = str(numpy.round(n, digits))
+    return f"{rounded: >{length}}"
 
 
 def _format_text(n, length=20):
@@ -27,7 +27,7 @@ def _format_text(n, length=20):
     :param n: A string
     :return: The string padded with spaces or trimmed
     """
-    return '{{0: >{0}}}'.format(length).format(n)[:length]
+    return f'{n: >{length}}'
 
 
 def _format_int(n, length=20):
@@ -36,7 +36,7 @@ def _format_int(n, length=20):
     :param n: A integer value
     :return: The integer value padded with spaces
     """
-    return '{{0: >{0}}}'.format(length).format(n)
+    return f'{n: >{length}}'
 
 
 def _lerp(percent, bounds):
@@ -74,7 +74,7 @@ def _transform_genome(genome, param_bounds):
     :return: The list of parameters in their normal scales
     """
     assert len(genome) == len(param_bounds)
-    return [_get_param_in_exp(genome[i], param_bounds[i]) for i in xrange(len(param_bounds))]
+    return [_get_param_in_exp(genome[i], param_bounds[i]) for i in range(len(param_bounds))]
 
 
 def _log(text):
@@ -82,7 +82,8 @@ def _log(text):
     Print text to standard output
     :param text: Text to be logged
     """
-    print text
+    # print(text)
+    pass
 
 
 class Optimizer(object):
@@ -93,7 +94,7 @@ class Optimizer(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def maximize(self, objective_function):
+    def maximize(self, objective_function, verbose=False):
         """
         Return the optimized parameters given the objective function
         :param objective_function:
@@ -187,7 +188,7 @@ class _GAOptimizer(Optimizer):
             _format_text('gen', 3),
             _format_text('idv', 3),
             _format_text('fitness'),
-            ' '.join([_format_text('param{0}'.format(i)) for i in xrange(self.num_params)])))
+            ' '.join([_format_text('param{0}'.format(i)) for i in range(self.num_params)])))
 
         for index, individual in enumerate(sorted(context.population, key=lambda x: -x.fitness)):
             assert isinstance(individual, GeneticAlgorithm.Individual)
@@ -232,18 +233,18 @@ class _SOptimizer(Optimizer):
         _log('# max_executions       = {0}'.format(self.max_executions))
 
         def make_random_parameters():
-            def make_random_parameter((low, high)):
+            def make_random_parameter(low, high):
                 return random.uniform(low, high)
 
             return numpy.array([
                 make_random_parameter(self.param_bounds[ii])
-                for ii in xrange(self.num_params)
+                for ii in range(self.num_params)
             ])
 
         end_time = None if self.timeout is None \
             else datetime.datetime.now() + self.timeout
 
-        names = ['param{0}'.format(i) for i in xrange(self.num_params)]
+        names = ['param{0}'.format(i) for i in range(self.num_params)]
         _log('# {0}'.format('\t'.join(
             map(str, ['execution', 'state', 'fitness'] + names)
         )))
@@ -388,9 +389,9 @@ class _PSOptimizer(Optimizer):
             _format_text('gen', 3),
             _format_text('idv', 3),
             _format_text('fitness'),
-            ' '.join([_format_text('param{0}'.format(i)) for i in xrange(self.num_params)]),
+            ' '.join([_format_text('param{0}'.format(i)) for i in range(self.num_params)]),
             _format_text('best_fitness'),
-            ' '.join([_format_text('best-param{0}'.format(i)) for i in xrange(self.num_params)])))
+            ' '.join([_format_text('best-param{0}'.format(i)) for i in range(self.num_params)])))
 
         for index, particle in enumerate(sorted(context.particles, key=lambda p: -p.best.fitness)):
             current_positions = _transform_genome(particle.current.positions, self.param_bounds)
@@ -470,7 +471,7 @@ class _DEAOptimizer(Optimizer):
             _format_text('gen', 3),
             _format_text('idv', 3),
             _format_text('fitness'),
-            ' '.join([_format_text('param{0}'.format(i)) for i in xrange(self.num_params)])))
+            ' '.join([_format_text('param{0}'.format(i)) for i in range(self.num_params)])))
 
         for index, individual in enumerate(sorted(context.population, key=lambda a: -a.fitness)):
             parameters = _transform_genome(individual, self.param_bounds)
